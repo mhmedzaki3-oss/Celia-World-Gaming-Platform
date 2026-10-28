@@ -248,6 +248,70 @@
             font-weight: bold;
             cursor: pointer;
         }
+
+        .animals-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .animal-card {
+            background: var(--bg-primary);
+            border: 2px solid var(--secondary-color);
+            border-radius: 15px;
+            padding: 15px 10px;
+            cursor: pointer;
+            font-size: 2.5rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .animal-card span {
+            font-size: 0.9rem;
+            font-weight: bold;
+            color: var(--text-color);
+        }
+
+        .simon-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 110px);
+            gap: 15px;
+            justify-content: center;
+            margin-top: 15px;
+        }
+
+        .simon-btn {
+            width: 110px;
+            height: 110px;
+            border-radius: 20px;
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 5px 10px rgba(0,0,0,0.2);
+        }
+
+        .mem-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 100px);
+            gap: 15px;
+            justify-content: center;
+            margin-top: 15px;
+        }
+
+        .mem-card {
+            width: 100px;
+            height: 100px;
+            background: var(--secondary-color);
+            color: white;
+            font-size: 2.5rem;
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
     </style>
 </head>
 <body data-theme="light">
@@ -417,10 +481,12 @@
                 initMathGame(body);
             } else if(gameId === 'maze') {
                 initMazeGame(body);
+            } else if(gameId === 'animals') {
+                initAnimalsGame(body);
+            } else if(gameId === 'simon') {
+                initSimonGame(body);
             } else if(gameId === 'memory') {
                 initMemoryGame(body);
-            } else {
-                body.innerHTML = `<p style="padding:30px;">🎮 اللعبة تفاعلية وجاهزة للتشغيل!</p>`;
             }
         }
 
@@ -428,6 +494,7 @@
             document.getElementById('gameModal').style.display = 'none';
         }
 
+        // 1. Coloring Game
         function initColoring() {
             const canvas = document.getElementById('paintCanvas');
             const ctx = canvas.getContext('2d');
@@ -460,6 +527,78 @@
             canvas.getContext('2d').clearRect(0, 0, canvas.width, canvas.height);
         }
 
+        // 2. Animals Game
+        function initAnimalsGame(container) {
+            container.innerHTML = `
+                <p style="margin-bottom:10px;">اضغط على الحيوان لسماع صوته التعلمي!</p>
+                <div class="animals-grid">
+                    <div class="animal-card" onclick="playAnimal('cat')">🐱<span>قطة</span></div>
+                    <div class="animal-card" onclick="playAnimal('dog')">🐶<span>كلب</span></div>
+                    <div class="animal-card" onclick="playAnimal('lion')">🦁<span>أسد</span></div>
+                    <div class="animal-card" onclick="playAnimal('cow')">🐮<span>بقرة</span></div>
+                    <div class="animal-card" onclick="playAnimal('chick')">🐥<span>صوص</span></div>
+                </div>
+            `;
+        }
+
+        function playAnimal(type) {
+            if(type === 'cat') playTone(750, 'sine', 0.3);
+            else if(type === 'dog') playTone(220, 'sawtooth', 0.2);
+            else if(type === 'lion') playTone(120, 'sawtooth', 0.5);
+            else if(type === 'cow') playTone(160, 'sine', 0.4);
+            else if(type === 'chick') playTone(950, 'triangle', 0.15);
+        }
+
+        // 3. Simon Says Game
+        function initSimonGame(container) {
+            container.innerHTML = `
+                <p style="margin-bottom:10px;">اضغط الأزرار الملونة لإنشاء نغماتك!</p>
+                <div class="simon-grid">
+                    <button class="simon-btn" style="background:#ff6b6b;" onclick="playTone(300,'sine',0.3)"></button>
+                    <button class="simon-btn" style="background:#4ecdc4;" onclick="playTone(450,'sine',0.3)"></button>
+                    <button class="simon-btn" style="background:#ffe66d;" onclick="playTone(600,'sine',0.3)"></button>
+                    <button class="simon-btn" style="background:#a8e6cf;" onclick="playTone(750,'sine',0.3)"></button>
+                </div>
+            `;
+        }
+
+        // 4. Memory Match Game
+        let flippedCards = [];
+        function initMemoryGame(container) {
+            flippedCards = [];
+            container.innerHTML = `
+                <p style="margin-bottom:10px;">ابحث عن البطاقتين المتشابهتين!</p>
+                <div class="mem-grid">
+                    <div class="mem-card" id="m1" onclick="flipMemCard('m1','⭐')">❓</div>
+                    <div class="mem-card" id="m2" onclick="flipMemCard('m2','🎈')">❓</div>
+                    <div class="mem-card" id="m3" onclick="flipMemCard('m3','⭐')">❓</div>
+                    <div class="mem-card" id="m4" onclick="flipMemCard('m4','🎈')">❓</div>
+                </div>
+            `;
+        }
+
+        function flipMemCard(id, symbol) {
+            const card = document.getElementById(id);
+            if(card.innerText !== '❓') return;
+            card.innerText = symbol;
+            playTone(520, 'sine', 0.15);
+            flippedCards.push({id, symbol});
+            
+            if(flippedCards.length === 2) {
+                if(flippedCards[0].symbol === flippedCards[1].symbol) {
+                    playTone(800, 'triangle', 0.3);
+                    flippedCards = [];
+                } else {
+                    setTimeout(() => {
+                        document.getElementById(flippedCards[0].id).innerText = '❓';
+                        document.getElementById(flippedCards[1].id).innerText = '❓';
+                        flippedCards = [];
+                    }, 600);
+                }
+            }
+        }
+
+        // 5. Speed Math Game
         function initMathGame(container) {
             let n1 = Math.floor(Math.random()*10)+1;
             let n2 = Math.floor(Math.random()*10)+1;
@@ -483,6 +622,7 @@
             }
         }
 
+        // 6. Smart Maze Game
         function initMazeGame(container) {
             container.innerHTML = `
                 <canvas id="mazeCanvas" width="260" height="260"></canvas>
@@ -541,10 +681,6 @@
                     setTimeout(() => { alert('أحسنت! وصلت لنهاية المتاهة 🎉'); closeGame(); playerX=1; playerY=1; }, 100);
                 }
             }
-        }
-
-        function initMemoryGame(container) {
-            container.innerHTML = `<p style="padding:20px; font-size:1.1rem;">🎮 اضغط على البطاقات المتشابهة لتفوز!</p><div style="display:grid; grid-template-columns:repeat(2,1fr); gap:10px; max-width:200px; margin:0 auto;"><button class="play-btn" onclick="alert('ممتاز! طابقة صحيحة 🎉'); closeGame();">⭐ نجمة</button><button class="play-btn" onclick="alert('ممتاز! طابقة صحيحة 🎉'); closeGame();">🎈 بالون</button></div>`;
         }
 
         renderGames();
