@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>عالم سيليا للألعاب | Celia's World Games</title>
+    <!-- لضمان عمل التطبيق بكامل الشاشة عند فتحه من الأيقونة -->
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&family=Fredoka+One&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-primary: #f0f4f8;
+            --bg-card: #ffffff;
+            --text-color: #2c3e50;
+            --primary-color: #ff6b6b;
+            --secondary-color: #4ecdc4;
+            --accent-color: #ffe66d;
+            --shadow: 0 10px 20px rgba(0,0,0,0.1);
+            --radius: 20px;
+        }
+
+        [data-theme="dark"] {
+            --bg-primary: #1a1921;
+            --bg-card: #2d2b38;
+            --text-color: #f0f4f8;
+            --primary-color: #ff8585;
+            --secondary-color: #65ded6;
+            --accent-color: #ffd93d;
+            --shadow: 0 10px 20px rgba(0,0,0,0.4);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            transition: background-color 0.3s, color 0.3s;
+            user-select: none;
+        }
+
+        body {
+            font-family: 'Cairo', 'Fredoka One', cursive, sans-serif;
+            background-color: var(--bg-primary);
+            color: var(--text-color);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            padding: 15px;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: var(--bg-card);
+            padding: 15px 25px;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            margin-bottom: 20px;
+        }
+
+        .logo-title {
+            font-size: 1.8rem;
+            font-weight: 900;
+            color: var(--primary-color);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .controls {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn-control {
+            background: var(--secondary-color);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: bold;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .btn-control:hover {
+            transform: translateY(-2px);
+        }
+
+        .hero-banner {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            padding: 20px;
+            border-radius: var(--radius);
+            text-align: center;
+            margin-bottom: 20px;
+            box-shadow: var(--shadow);
+        }
+
+        .age-tabs {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .tab-btn {
+            background: var(--bg-card);
+            color: var(--text-color);
+            border: 3px solid transparent;
+            padding: 12px 24px;
+            border-radius: 15px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 1.1rem;
+            box-shadow: var(--shadow);
+        }
+
+        .tab-btn.active {
+            border-color: var(--primary-color);
+            background: var(--accent-color);
+            color: #333;
+        }
+
+        .game-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        .game-card {
+            background: var(--bg-card);
+            border-radius: var(--radius);
+            padding: 20px;
+            box-shadow: var(--shadow);
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .game-card h3 {
+            margin-bottom: 10px;
+            color: var(--primary-color);
+        }
+
+        .game-card p {
+            font-size: 0.95rem;
+            margin-bottom: 15px;
+            opacity: 0.9;
+        }
+
+        .play-btn {
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 10px;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .game-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .modal-content {
+            background: var(--bg-card);
+            border-radius: var(--radius);
+            width: 100%;
+            max-width: 600px;
+            padding: 25px;
+            position: relative;
+            text-align: center;
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            background: #ff4757;
+            color: white;
+            border: none;
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        footer {
+            margin-top: auto;
+            padding: 20px;
+            text-align: center;
+            background: var(--bg-card);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            margin-top: 20px;
+        }
+
+        .payment-box {
+            background: linear-gradient(135deg, #11998e, #38ef7d);
+            color: white;
+            padding: 15px;
+            border-radius: 15px;
+            margin-top: 15px;
+        }
+
+        canvas {
+            border: 2px dashed var(--secondary-color);
+            border-radius: 10px;
+            background: white;
+            cursor: crosshair;
+        }
+    </style>
+</head>
+<body data-theme="light">
+
+    <header>
+        <div class="logo-title">
+            <span>🎨</span>
+            <span id="app-title">عالم سيليا للألعاب</span>
+        </div>
+        <div class="controls">
+            <button class="btn-control" onclick="toggleLanguage()">🌐 <span id="lang-btn">English</span></button>
+            <button class="btn-control" onclick="toggleTheme()">🌙/☀️</button>
+        </div>
+    </header>
+
+    <div class="hero-banner">
+        <h1 id="hero-title">مرحباً بكم في عالم سيليا للألعاب الذكية! 🎉</h1>
+        <p id="hero-desc">ألعاب تفاعلية تعليمية وآمنة للأطفال من جميع الأعمار</p>
+    </div>
+
+    <div class="age-tabs">
+        <button class="tab-btn active" onclick="filterGames('all')" id="tab-all">الكل</button>
+        <button class="tab-btn" onclick="filterGames('3-5')" id="tab-3-5">3 - 5 سنوات</button>
+        <button class="tab-btn" onclick="filterGames('6-9')" id="tab-6-9">6 - 9 سنوات</button>
+        <button class="tab-btn" onclick="filterGames('10+')" id="tab-10">10+ سنوات</button>
+    </div>
+
+    <div class="game-grid" id="games-container">
+        <!-- الألعاب تظهر آلياً هنا -->
+    </div>
+
+    <div class="game-modal" id="gameModal">
+        <div class="modal-content">
+            <button class="close-btn" onclick="closeGame()">X</button>
+            <h2 id="modalGameTitle" style="margin-bottom:15px;"></h2>
+            <div id="modalGameBody"></div>
+        </div>
+    </div>
+
+    <footer>
+        <p id="footer-text">جميع الحقوق محفوظة © عالم سيليا 2026</p>
+        <div class="payment-box">
+            <p id="pay-text">لطلب نسخة خاصة باسم طفلك للتفعيل والدفع عبر InstaPay:</p>
+            <h3 style="margin-top:5px; font-size:1.3rem;">📱 01022918830</h3>
+        </div>
+    </footer>
+
+    <script>
+        let currentLang = 'ar';
+        let currentTheme = 'light';
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+
+        function playTone(freq, type = 'sine', duration = 0.2) {
+            try {
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.type = type;
+                osc.frequency.value = freq;
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                osc.start();
+                gain.gain.exponentialRampToValueAtTime(0.00001, audioCtx.currentTime + duration);
+                osc.stop(audioCtx.currentTime + duration);
+            } catch(e){}
+        }
+
+        const translations = {
+            ar: {
+                appTitle: "عالم سيليا للألعاب",
+                heroTitle: "مرحباً بكم في عالم سيليا للألعاب الذكية! 🎉",
+                heroDesc: "ألعاب تفاعلية تعليمية وآمنة للأطفال من جميع الأعمار",
+                langBtn: "English",
+                tabAll: "الكل",
+                tab35: "3 - 5 سنوات",
+                tab69: "6 - 9 سنوات",
+                tab10: "10+ سنوات",
+                play: "العب الآن 🎮",
+                footerText: "جميع الحقوق محفوظة © عالم سيليا 2026",
+                payText: "لطلب نسخة خاصة باسم طفلك للتفعيل والدفع عبر InstaPay:"
+            },
+            en: {
+                appTitle: "Celia's World Games",
+                heroTitle: "Welcome to Celia's Smart Games World! 🎉",
+                heroDesc: "Safe & Interactive educational games for all ages",
+                langBtn: "عربي",
+                tabAll: "All",
+                tab35: "Ages 3-5",
+                tab69: "Ages 6-9",
+                tab10: "Ages 10+",
+                play: "Play Now 🎮",
+                footerText: "All Rights Reserved © Celia's World 2026",
+                payText: "For custom child edition & InstaPay activation:"
+            }
+        };
+
+        const games = [
+            { id: 'coloring', age: '3-5', titleAr: 'مرسم سيليا السحري', titleEn: 'Magic Coloring', descAr: 'رسم حر وتلوين بألوان مبهجة', descEn: 'Free drawing & coloring' },
+            { id: 'animals', age: '3-5', titleAr: 'أصوات الحيوانات', titleEn: 'Animal Sounds', descAr: 'تعرف على أصوات وأشكال الحيوانات', descEn: 'Learn animal sounds and shapes' },
+            { id: 'memory', age: '6-9', titleAr: 'قوة الذاكرة', titleEn: 'Memory Match', descAr: 'طابق البطاقات المتشابهة في أسرع وقت', descEn: 'Match cards as fast as you can' },
+            { id: 'simon', age: '6-9', titleAr: 'تتابع النغمات', titleEn: 'Simon Says', descAr: 'احفظ تتابع الألوان والأصوات', descEn: 'Repeat color & sound patterns' },
+            { id: 'math', age: '10+', titleAr: 'التحدي الرياضي', titleEn: 'Speed Math', descAr: 'حل المسائل الحسابية السريعة', descEn: 'Solve math questions quickly' },
+            { id: 'maze', age: '10+', titleAr: 'المتاهة الذكية', titleEn: 'Smart Maze', descAr: 'وجه الكرة للخروج من المتاهة', descEn: 'Guide the ball out of the maze' }
+        ];
+
+        function toggleTheme() {
+            currentTheme = currentTheme === 'light' ? 'dark' : 'light';
+            document.body.setAttribute('data-theme', currentTheme);
+        }
+
+        function toggleLanguage() {
+            currentLang = currentLang === 'ar' ? 'en' : 'ar';
+            document.dir = currentLang === 'ar' ? 'rtl' : 'ltr';
+            
+            const t = translations[currentLang];
+            document.getElementById('app-title').innerText = t.appTitle;
+            document.getElementById('hero-title').innerText = t.heroTitle;
+            document.getElementById('hero-desc').innerText = t.heroDesc;
+            document.getElementById('lang-btn').innerText = t.langBtn;
+            document.getElementById('tab-all').innerText = t.tabAll;
+            document.getElementById('tab-3-5').innerText = t.tab35;
+            document.getElementById('tab-6-9').innerText = t.tab69;
+            document.getElementById('tab-10').innerText = t.tab10;
+            document.getElementById('footer-text').innerText = t.footerText;
+            document.getElementById('pay-text').innerText = t.payText;
+
+            renderGames('all');
+        }
+
+        function renderGames(filterAge = 'all') {
+            const container = document.getElementById('games-container');
+            container.innerHTML = '';
+            
+            const filtered = filterAge === 'all' ? games : games.filter(g => g.age === filterAge);
+            const t = translations[currentLang];
+
+            filtered.forEach(game => {
+                const card = document.createElement('div');
+                card.className = 'game-card';
+                card.innerHTML = `
+                    <div>
+                        <h3>${currentLang === 'ar' ? game.titleAr : game.titleEn}</h3>
+                        <p>${currentLang === 'ar' ? game.descAr : game.descEn}</p>
+                    </div>
+                    <button class="play-btn" onclick="openGame('${game.id}')">${t.play}</button>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function filterGames(age) {
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            event.target.classList.add('active');
+            renderGames(age);
+        }
+
+        function openGame(gameId) {
+            playTone(440, 'triangle', 0.1);
+            const modal = document.getElementById('gameModal');
+            const title = document.getElementById('modalGameTitle');
+            const body = document.getElementById('modalGameBody');
+            const game = games.find(g => g.id === gameId);
+
+            title.innerText = currentLang === 'ar' ? game.titleAr : game.titleEn;
+            modal.style.display = 'flex';
+
+            if(gameId === 'coloring') {
+                body.innerHTML = `
+                    <canvas id="paintCanvas" width="300" height="250"></canvas><br>
+                    <button class="btn-control" style="margin-top:10px;" onclick="clearCanvas()">مسح / Clear</button>
+                `;
+                initColoring();
+            } else if(gameId === 'math') {
+                initMathGame(body);
+            } else {
+                body.innerHTML = `<p style="padding:40px;">🎮 اللعبة قيد التشغيل المباشر للتحدي!</p>`;
+            }
+        }
+
+        function closeGame() {
+            document.getElementById('gameModal').style.display = 'none';
+        }
+
+        function initColoring() {
+            const canvas = document.getElementById('paintCanvas');
+            const ctx = canvas.getContext('2d');
+            let painting = false;
+
+            function start(e) { painting = true; draw(e); }
+            function end() { painting = false; ctx.beginPath(); }
+            function draw(e) {
+                if(!painting) return;
+                const rect = canvas.getBoundingClientRect();
+                ctx.lineWidth = 5;
+                ctx.lineCap = 'round';
+                ctx.strokeStyle = '#ff6b6b';
+                ctx.lineTo((e.clientX || e.touches[0].clientX) - rect.left, (e.clientY || e.touches[0].clientY) - rect.top);
+                ctx.stroke();
+                ctx.beginPath();
+                ctx.moveTo((e.clientX || e.touches[0].clientX) - rect.left, (e.clientY || e.touches[0].clientY) - rect.top);
+            }
+
+            canvas.addEventListener('mousedown', start);
+            canvas.addEventListener('mouseup', end);
+            canvas.addEventListener('mousemove', draw);
+            canvas.addEventListener('touchstart', start);
+            canvas.addEventListener('touchend', end);
+            canvas.addEventListener('touchmove', draw);
+        }
+
+        function clearCanvas() {
+            const canvas = document.getElementById('paintCanvas');
+            canvas.getContext('2d').clearRect(0, 0, canvas.width, canvas.height);
+        }
+
+        function initMathGame(container) {
+            let n1 = Math.floor(Math.random()*10)+1;
+            let n2 = Math.floor(Math.random()*10)+1;
+            container.innerHTML = `
+                <h3 style="font-size:2rem; margin:20px 0;">${n1} + ${n2} = ?</h3>
+                <input type="number" id="mathAns" style="font-size:1.5rem; width:100px; text-align:center; padding:5px; border-radius:10px;">
+                <br><br>
+                <button class="play-btn" onclick="checkMath(${n1+n2})">إجابة / Check</button>
+            `;
+        }
+
+        function checkMath(correct) {
+            const ans = parseInt(document.getElementById('mathAns').value);
+            if(ans === correct) {
+                playTone(600, 'sine', 0.3);
+                alert('ممتاز! إجابة صحيحة 🎉');
+                closeGame();
+            } else {
+                playTone(200, 'sawtooth', 0.3);
+                alert('حاول مرة أخرى! 💪');
+            }
+        }
+
+        // Initial Load
+        renderGames();
+    </script>
+</body>
+</html>
