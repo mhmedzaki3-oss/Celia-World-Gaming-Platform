@@ -221,15 +221,61 @@
 
     <footer>
         <p id="footer-text">جميع الحقوق محفوظة © عالم سيليا 2026</p>
-        <div class="payment-box">
-            <p id="pay-text">لطلب نسخة خاصة باسم طفلك للتفعيل والدفع عبر InstaPay:</p>
-            <div class="contact-btns">
-                <a class="btn-instapay" href="tel:01022918830" aria-label="اتصل للدفع عبر InstaPay">📱 01022918830</a>
-                <a class="btn-whatsapp" href="https://wa.me/201022918830?text=%D8%A3%D8%B1%D9%8A%D8%AF%20%D9%86%D8%B3%D8%AE%D8%A9%20%D8%AE%D8%A7%D8%B5%D8%A9%20%D8%A8%D8%A7%D8%B3%D9%85%20%D8%B7%D9%81%D9%84%D9%8A" target="_blank" rel="noopener" aria-label="تواصل واتساب">💬 واتساب</a>
-            </div>
-        </div>
+      
+<div class="payment-box" style="text-align:center">
+  <h2>🎮 عالم سيليا — النسخة الكاملة</h2>
+  <p style="font-size:1.4rem;font-weight:900">
+    السعر: 39 جنيهًا مصريًا فقط
+  </p>
+
+  <p>
+    1. انسخ رقم الدفع أدناه.<br>
+    2. حوّل 39 جنيهًا من تطبيق InstaPay.<br>
+    3. أرسل إيصال التحويل عبر واتساب لطلب التفعيل.
+  </p>
+
+  <div style="margin:15px">
+    <strong>رقم InstaPay / الموبايل:</strong>
+    <div dir="ltr" style="font-size:1.4rem;font-weight:bold;margin:8px">
+      01022918830
+    </div>
+
+    <button type="button" onclick="copyCeliaPaymentNumber()"
+      style="padding:12px 18px;border:0;border-radius:10px;
+      background:#6a1b9a;color:white;font-weight:bold;cursor:pointer">
+      📋 نسخ رقم الدفع
+    </button>
+  </div>
+
+  <p id="celia-payment-status" role="status" aria-live="polite"></p>
+
+  <a href="https://wa.me/201022918830?text=%D9%85%D8%B1%D8%AD%D8%A8%D8%A7%D8%8C%20%D8%A3%D8%B1%D9%8A%D8%AF%20%D8%B4%D8%B1%D8%A7%D8%A1%20%D8%B9%D8%A7%D9%84%D9%85%20%D8%B3%D9%8A%D9%84%D9%8A%D8%A7%20%D8%A8%D8%B3%D8%B9%D8%B1%2039%20%D8%AC%D9%86%D9%8A%D9%87%D8%A7%D9%8B.%20%D8%B3%D8%A3%D8%B1%D8%B3%D9%84%20%D8%A5%D9%8A%D8%B5%D8%A7%D9%84%20%D8%A7%D9%84%D8%AA%D8%AD%D9%88%D9%8A%D9%84%20%D9%84%D9%85%D8%B1%D8%A7%D8%AC%D8%B9%D8%AA%D9%87%20%D9%88%D8%B7%D9%84%D8%A8%20%D8%A7%D9%84%D8%AA%D9%81%D8%B9%D9%8A%D9%84."
+     target="_blank" rel="noopener"
+     style="display:inline-block;margin:8px;padding:13px 18px;
+     border-radius:10px;background:#167d46;color:white;
+     text-decoration:none;font-weight:bold">
+    ✅ دفعت بالفعل — اطلب التفعيل عبر واتساب
+  </a>
+
+  <p style="font-size:.85rem;margin-top:10px">
+    التفعيل يدوي بعد مراجعة إيصال التحويل. لا يُؤكَّد الدفع تلقائيًا من الموقع.
+  </p>
+</div>
+
     </footer>
 
+async function copyCeliaPaymentNumber() {
+  const status = document.getElementById('celia-payment-status');
+
+  try {
+    await navigator.clipboard.writeText('01022918830');
+    status.textContent =
+      'تم نسخ الرقم. افتح InstaPay وحوّل 39 جنيهًا.';
+  } catch (error) {
+    status.textContent =
+      'تعذر النسخ تلقائيًا. أدخل الرقم يدويًا: 01022918830';
+  }
+}
     <script>
         let currentLang = 'ar';
         let currentTheme = 'light';
